@@ -13,12 +13,12 @@ import (
 )
 
 // --------------------
-// CaptureKey
+// captureKey
 // --------------------
 
-// CaptureKey reads a key press from stdin in raw mode and returns a key type and value.
+// captureKey reads a key press from stdin in raw mode and returns a key type and value.
 // It returns one of "Character", "Arrow", "Special" (or "error" if something goes wrong).
-func CaptureKey() (string, string) {
+func captureKey() (string, string) {
 	fd := int(os.Stdin.Fd())
 	oldState, err := term.MakeRaw(fd)
 	if err != nil {
@@ -187,12 +187,12 @@ func Move(direc string, n int) {
 }
 
 // --------------------
-// nprint
+// nPrint
 // --------------------
 
-// NPrint clears the current line (if newline is false) and then prints the string.
+// nPrint clears the current line (if newline is false) and then prints the string.
 // If empty is false it prefixes the string with a character (e.g. "#").
-func NPrint(str, character string, newline, empty bool) {
+func nPrint(str, character string, newline, empty bool) {
 	if !newline {
 		fmt.Print("\r\033[2K")
 	} else {
@@ -206,7 +206,7 @@ func NPrint(str, character string, newline, empty bool) {
 }
 
 // --------------------
-// DInput with Autocompletion
+// dInput with Autocompletion
 // --------------------
 
 // findClosestMatch returns the first completion that starts with input.
@@ -231,12 +231,12 @@ func autocomplete(input string, completions []string) string {
 	return input
 }
 
-// DInput provides an interactive input prompt with autocomplete based on a list of completions.
-func DInput(completions []string, prompt string) string {
+// dInput provides an interactive input prompt with autocomplete based on a list of completions.
+func dInput(completions []string, prompt string) string {
 	var text []rune
 	NPrint(prompt+" ", "#", false, true)
 	for {
-		keyType, key := CaptureKey()
+		keyType, key := captureKey()
 		if keyType == "Special" {
 			if key == "enter" {
 				break
@@ -411,4 +411,11 @@ func ClearScreen() {
 // ExitScreen switches back from the alternate screen.
 func ExitScreen() {
 	fmt.Print("\033[?1049l")
+}
+
+func Gap(word string, num int, space string) string {
+  if num > len(word) {
+    return strings.Repeat(space, num-len(word))
+  }
+    return strings.Repeat(space, len(word)-num)
 }

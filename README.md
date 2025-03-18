@@ -1,3 +1,4 @@
 # go_ansi
 
-Simple Go module that allows terminal manipulation using mainly ANSI
+Simple TUI package for Go that sometimes utilizes ANSI.
+Contrary to the name, no, not *everything* in the package uses ANSI.
