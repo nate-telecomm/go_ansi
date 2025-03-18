@@ -412,28 +412,3 @@ func ClearScreen() {
 func ExitScreen() {
 	fmt.Print("\033[?1049l")
 }
-
-// --------------------
-// main (Example Usage)
-// --------------------
-
-func main() {
-	// Ensure we switch back from the alternate screen on exit.
-	defer ExitScreen()
-
-	// Example: show a progress bar.
-	mpb := NewMultiProgressBar()
-	mpb.AddBar("Download", 100)
-	for i := 0; i <= 100; i++ {
-		mpb.UpdateBar("Download", i)
-		time.Sleep(50 * time.Millisecond)
-	}
-	mpb.FinishBar("Download")
-	time.Sleep(1 * time.Second)
-
-	// Example: interactive input with autocomplete.
-	completions := []string{"apple", "banana", "cherry", "date"}
-	input := DInput(completions, "Enter fruit")
-	fmt.Println("You entered:", input)
-}
-
