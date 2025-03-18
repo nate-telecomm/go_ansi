@@ -419,3 +419,42 @@ func Gap(word string, num int, space string) string {
   }
     return strings.Repeat(space, len(word)-num)
 }
+
+func Menu(options []string) int {
+  HideCursor()
+  for _, option := range options {
+    fmt.Println("  " + Blue + string(option) + End)
+  }
+  current := 1
+  Move("up", len(options))
+  min := 1
+  max := len(options)
+  for true {
+    ctype, char := CaptureKey()
+    if ctype == "Special" {
+      if char == "enter" { break }
+    } else if ctype == "Arrow" {
+      if char == "up" && current != min {
+        current -= 1
+        Move("up", 1)
+      } else if char == "down" && current != max {
+        current += 1
+        Move("down", 1)
+      }
+    }
+    SaveCursor()
+    Move("down", max - current)
+    for i := 0; i < max; i++ {
+      fmt.Print(" ")
+      Move("left", 1)
+      Move("up", 1)
+    }
+
+    LoadCursor()
+    fmt.Print(">")
+    Move("left", 1)
+  }
+  ShowCursor()
+  Move("up", len(options) + 1)
+  return current
+}
