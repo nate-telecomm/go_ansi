@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
-	"time"
+	_ "time"
 
 	"golang.org/x/term"
 )
