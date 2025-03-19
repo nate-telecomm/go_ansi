@@ -106,7 +106,6 @@ const (
 	Blink       = "\033[5m"
 	Negative    = "\033[7m"
 	Crossed     = "\033[9m"
-  ScreenClear = "\033[2J\033[H"
 	End         = "\033[0m"
 )
 
@@ -235,7 +234,7 @@ func autocomplete(input string, completions []string) string {
 // dInput provides an interactive input prompt with autocomplete based on a list of completions.
 func dInput(completions []string, prompt string) string {
 	var text []rune
-	NPrint(prompt+" ", "#", false, true)
+	nPrint(prompt+" ", "#", false, true)
 	for {
 		keyType, key := captureKey()
 		if keyType == "Special" {
@@ -279,7 +278,7 @@ func dInput(completions []string, prompt string) string {
 		if len(autoWord) > len(lastWord) {
 			fin += Faint + autoWord[len(lastWord):] + End
 		}
-		NPrint(prompt+" "+fin, "#", false, true)
+		nPrint(prompt+" "+fin, "#", false, true)
 	}
 	fmt.Println()
 	return string(text)
@@ -406,7 +405,7 @@ func NewScreen() {
 
 // ClearScreen clears the terminal.
 func ClearScreen() {
-	fmt.Print("\033[2J")
+	fmt.Print("\033[2J\033[H")
 }
 
 // ExitScreen switches back from the alternate screen.
