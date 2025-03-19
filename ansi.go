@@ -106,6 +106,7 @@ const (
 	Blink       = "\033[5m"
 	Negative    = "\033[7m"
 	Crossed     = "\033[9m"
+  ScreenClear = "\033[2J\033[H"
 	End         = "\033[0m"
 )
 
