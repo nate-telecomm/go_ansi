@@ -430,7 +430,7 @@ func Menu(options []string) int {
   min := 1
   max := len(options)
   for true {
-    ctype, char := CaptureKey()
+    ctype, char := captureKey()
     if ctype == "Special" {
       if char == "enter" { break }
     } else if ctype == "Arrow" {
