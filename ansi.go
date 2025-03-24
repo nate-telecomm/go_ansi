@@ -13,12 +13,12 @@ import (
 )
 
 // --------------------
-// captureKey
+// CaptureKey
 // --------------------
 
-// captureKey reads a key press from stdin in raw mode and returns a key type and value.
+// CaptureKey reads a key press from stdin in raw mode and returns a key type and value.
 // It returns one of "Character", "Arrow", "Special" (or "error" if something goes wrong).
-func captureKey() (string, string) {
+func CaptureKey() (string, string) {
 	fd := int(os.Stdin.Fd())
 	oldState, err := term.MakeRaw(fd)
 	if err != nil {
@@ -187,12 +187,12 @@ func Move(direc string, n int) {
 }
 
 // --------------------
-// nPrint
+// NPrint
 // --------------------
 
-// nPrint clears the current line (if newline is false) and then prints the string.
+// NPrint clears the current line (if newline is false) and then prints the string.
 // If empty is false it prefixes the string with a character (e.g. "#").
-func nPrint(str, character string, newline, empty bool) {
+func NPrint(str, character string, newline, empty bool) {
 	if !newline {
 		fmt.Print("\r\033[2K")
 	} else {
@@ -206,7 +206,7 @@ func nPrint(str, character string, newline, empty bool) {
 }
 
 // --------------------
-// dInput with Autocompletion
+// DInput with Autocompletion
 // --------------------
 
 // findClosestMatch returns the first completion that starts with input.
@@ -231,12 +231,12 @@ func autocomplete(input string, completions []string) string {
 	return input
 }
 
-// dInput provides an interactive input prompt with autocomplete based on a list of completions.
-func dInput(completions []string, prompt string) string {
+// DInput provides an interactive input prompt with autocomplete based on a list of completions.
+func DInput(completions []string, prompt string) string {
 	var text []rune
-	nPrint(prompt+" ", "#", false, true)
+	NPrint(prompt+" ", "#", false, true)
 	for {
-		keyType, key := captureKey()
+		keyType, key := CaptureKey()
 		if keyType == "Special" {
 			if key == "enter" {
 				break
@@ -278,7 +278,7 @@ func dInput(completions []string, prompt string) string {
 		if len(autoWord) > len(lastWord) {
 			fin += Faint + autoWord[len(lastWord):] + End
 		}
-		nPrint(prompt+" "+fin, "#", false, true)
+		NPrint(prompt+" "+fin, "#", false, true)
 	}
 	fmt.Println()
 	return string(text)
@@ -430,7 +430,7 @@ func Menu(options []string) int {
   min := 1
   max := len(options)
   for true {
-    ctype, char := captureKey()
+    ctype, char := CaptureKey()
     if ctype == "Special" {
       if char == "enter" { break }
     } else if ctype == "Arrow" {
