@@ -3,11 +3,12 @@ package ansi
 import (
 	"fmt"
 	"os"
+	"runtime"
 	"sort"
 	"strings"
 	"sync"
 	_ "time"
-  "github.com/eiannone/keyboard"
+
 	"golang.org/x/term"
 )
 
@@ -18,38 +19,65 @@ import (
 // CaptureKey reads a key press from stdin in raw mode and returns a key type and value.
 // It returns one of "Character", "Arrow", "Special" (or "error" if something goes wrong).
 func CaptureKey() (string, string) {
-	if err := keyboard.Open(); err != nil {
-		return "error", err.Error()
-	}
-	defer keyboard.Close()
-
-	char, key, err := keyboard.GetKey()
+	fd := int(os.Stdin.Fd())
+	oldState, err := term.MakeRaw(fd)
 	if err != nil {
 		return "error", err.Error()
 	}
+	defer term.Restore(fd, oldState)
 
-	switch key {
-	case keyboard.KeyArrowUp:
-		return "Arrow", "up"
-	case keyboard.KeyArrowDown:
-		return "Arrow", "down"
-	case keyboard.KeyArrowLeft:
-		return "Arrow", "left"
-	case keyboard.KeyArrowRight:
-		return "Arrow", "right"
-	case keyboard.KeyEnter:
-		return "Special", "enter"
-	case keyboard.KeyBackspace:
-		return "Special", "backspace"
-	case keyboard.KeyCtrlC:
-		return "Special", "ctrl+c"
-	case 0:
-		// If no special key, return the character
-		return "Character", string(char)
-	default:
-		return "Special", fmt.Sprintf("%v", key)
+	b := make([]byte, 3)
+	n, err := os.Stdin.Read(b)
+	if err != nil {
+		return "error", err.Error()
+	}
+	keyStr := string(b[:n])
+
+	if runtime.GOOS == "windows" {
+		// Windows-specific handling (roughly similar to Python’s msvcrt.getch)
+		if n > 0 && (b[0] == 0 || b[0] == 224) {
+			if n < 2 {
+				os.Stdin.Read(b[1:2])
+			}
+			switch b[1] {
+			case 'H':
+				return "Arrow", "up"
+			case 'P':
+				return "Arrow", "down"
+			case 'K':
+				return "Arrow", "left"
+			case 'M':
+				return "Arrow", "right"
+			}
+		}
+		if n == 1 {
+			if b[0] == 8 {
+				return "Special", "backspace"
+			} else if b[0] == 13 {
+				return "Special", "enter"
+			}
+		}
+		return "Character", keyStr
+	} else {
+		// Unix-like handling
+		if keyStr == "\x1b[A" {
+			return "Arrow", "up"
+		} else if keyStr == "\x1b[B" {
+			return "Arrow", "down"
+		} else if keyStr == "\x1b[C" {
+			return "Arrow", "right"
+		} else if keyStr == "\x1b[D" {
+			return "Arrow", "left"
+		} else if keyStr == "\x7f" {
+			return "Special", "backspace"
+		} else if keyStr == "\r" || keyStr == "\n" {
+			return "Special", "enter"
+		} else {
+			return "Character", keyStr
+		}
 	}
 }
+
 // --------------------
 // Colors
 // --------------------
@@ -424,10 +452,9 @@ func Menu(options []string) int {
 
     LoadCursor()
     fmt.Print(">")
-    Move("left", 1)
-  }
-  ShowCursor()
-  Move("up", len(options) + 1)
+    Move("left", 1)ns) + 1)
   return current
 }
-
+  }
+  ShowCursor()
+  Move("up", len(optio
