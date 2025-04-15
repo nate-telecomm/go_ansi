@@ -3,7 +3,6 @@ package ansi
 import (
 	"fmt"
 	"os"
-	"runtime"
 	"sort"
 	"strings"
 	"sync"
