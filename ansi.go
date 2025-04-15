@@ -452,9 +452,9 @@ func Menu(options []string) int {
 
     LoadCursor()
     fmt.Print(">")
-    Move("left", 1)ns) + 1)
-  return current
-}
+    Move("left", 1)
   }
   ShowCursor()
-  Move("up", len(optio
+  Move("up", len(options) + 1)
+  return current
+}
