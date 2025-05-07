@@ -34,7 +34,9 @@ func CaptureKey() (string, string) {
 	keyStr := string(b[:n])
 
 	if runtime.GOOS == "windows" {
-		// Windows-specific handling (roughly similar to Python’s msvcrt.getch)
+		if n == 1 && b[0] == 27 {
+			return "Special", "escape"
+		}
 		if n > 0 && (b[0] == 0 || b[0] == 224) {
 			if n < 2 {
 				os.Stdin.Read(b[1:2])
@@ -51,32 +53,36 @@ func CaptureKey() (string, string) {
 			}
 		}
 		if n == 1 {
-			if b[0] == 8 {
+			switch b[0] {
+			case 8:
 				return "Special", "backspace"
-			} else if b[0] == 13 {
+			case 13:
 				return "Special", "enter"
 			}
 		}
 		return "Character", keyStr
 	} else {
-		// Unix-like handling
-		if keyStr == "\x1b[A" {
+		switch keyStr {
+		case "\x1b":
+			return "Special", "escape"
+		case "\x1b[A":
 			return "Arrow", "up"
-		} else if keyStr == "\x1b[B" {
+		case "\x1b[B":
 			return "Arrow", "down"
-		} else if keyStr == "\x1b[C" {
+		case "\x1b[C":
 			return "Arrow", "right"
-		} else if keyStr == "\x1b[D" {
+		case "\x1b[D":
 			return "Arrow", "left"
-		} else if keyStr == "\x7f" {
+		case "\x7f":
 			return "Special", "backspace"
-		} else if keyStr == "\r" || keyStr == "\n" {
+		case "\r", "\n":
 			return "Special", "enter"
-		} else {
+		default:
 			return "Character", keyStr
 		}
 	}
 }
+
 
 // --------------------
 // Colors
