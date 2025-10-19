@@ -464,3 +464,10 @@ func Menu(options []string) int {
   Move("up", len(options) + 1)
   return current
 }
+
+// --------------------
+// Other stuff
+// --------------------
+func Link(link, text string) string {
+	return fmt.Sprintf("\033]8;;%s\033\\%s\033]8;;\033\\", link, text)
+}
